@@ -16,6 +16,8 @@
 .tmproj
 nbproject
 Thumbs.db
+.settings
+.classpath
 
 # output folders
 bin/
