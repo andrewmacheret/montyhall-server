@@ -5,7 +5,7 @@
 
 	<groupId>andrew-macheret</groupId>
 	<artifactId>montyhall-server</artifactId>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -46,13 +46,16 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.11</version>
 				<configuration>
-					<imageName>montyhall-server</imageName>
+					<imageName>515875352897.dkr.ecr.us-east-1.amazonaws.com/projects/server/montyhall-server:latest</imageName>
+					
 					<dockerDirectory>src/main/docker</dockerDirectory>
+					<useConfigFile>true</useConfigFile>
 					<resources>
 						<resource>
 							<targetPath>/</targetPath>

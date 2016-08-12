@@ -13,13 +13,16 @@
 # OS or Editor folders
 .DS_Store
 .cache
+.project
+.settings
 .tmproj
 nbproject
 Thumbs.db
-.settings
-.classpath
-.project
 
-# output folders
-bin/
+# NPM packages folder.
+node_modules/
+
+# Brunch output folder.
 target/
+bin/
+
