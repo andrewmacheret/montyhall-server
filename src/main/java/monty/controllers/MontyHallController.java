@@ -22,12 +22,18 @@ import monty.entities.Game;
 import monty.services.MontyHallService;
 
 @RestController
-@RequestMapping(value = "/api/v1/monty/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/monty/", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class MontyHallController {
 	@Autowired
 	MontyHallService montyHallService;
 
+	// get game state and doors
+	@RequestMapping(value = "version", method = RequestMethod.GET)
+	public String getVersion() {
+		return "1.0.0";
+	}
+	
 	// get game state and doors
 	@RequestMapping(value = "game/{gameId}", method = RequestMethod.GET)
 	public String getGame(@PathVariable String gameId) {
@@ -37,7 +43,7 @@ public class MontyHallController {
 	}
 
 	// create new game
-	@RequestMapping(value = "game", method = RequestMethod.POST)
+	@RequestMapping(value = "game", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String createGame(@RequestBody GameOptions gameOptions) {
 		Game game = gameOptions.getNumberOfDoors() != null
 				? montyHallService.newGame(gameOptions.getNumberOfDoors())
@@ -47,7 +53,7 @@ public class MontyHallController {
 	}
 
 	// select / open a door
-	@RequestMapping(value = "game/{gameId}/door/{doorNumber}", method = RequestMethod.PUT)
+	@RequestMapping(value = "game/{gameId}/door/{doorNumber}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String changeDoor(@PathVariable String gameId, @PathVariable int doorNumber,
 			@RequestBody DoorOptions doorOptions) {
 		if (doorOptions.getState() == null) {
