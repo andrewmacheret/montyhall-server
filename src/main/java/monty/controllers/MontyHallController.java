@@ -22,20 +22,27 @@ import monty.entities.Game;
 import monty.services.MontyHallService;
 
 @RestController
-@RequestMapping(value = "/api/v1/monty/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class MontyHallController {
 	@Autowired
 	MontyHallService montyHallService;
 
-	// get game state and doors
-	@RequestMapping(value = "version", method = RequestMethod.GET)
+	// give basic info at the root path
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String getVersion() {
-		return "1.0.0";
+		return Json.createObjectBuilder()
+				.add("version", getClass().getPackage().getImplementationVersion())
+				.add("apis", Json.createArrayBuilder()
+						.add("/game")
+						.add("/stats")
+						.build())
+				.build()
+				.toString();
 	}
 	
 	// get game state and doors
-	@RequestMapping(value = "game/{gameId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/game/{gameId}", method = RequestMethod.GET)
 	public String getGame(@PathVariable String gameId) {
 		Game game = montyHallService.getGame(gameId);
 
@@ -43,7 +50,7 @@ public class MontyHallController {
 	}
 
 	// create new game
-	@RequestMapping(value = "game", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/game", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String createGame(@RequestBody GameOptions gameOptions) {
 		Game game = gameOptions.getNumberOfDoors() != null
 				? montyHallService.newGame(gameOptions.getNumberOfDoors())
@@ -53,7 +60,7 @@ public class MontyHallController {
 	}
 
 	// select / open a door
-	@RequestMapping(value = "game/{gameId}/door/{doorNumber}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/game/{gameId}/door/{doorNumber}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String changeDoor(@PathVariable String gameId, @PathVariable int doorNumber,
 			@RequestBody DoorOptions doorOptions) {
 		if (doorOptions.getState() == null) {
@@ -80,7 +87,7 @@ public class MontyHallController {
 	}
 
 	// delete game
-	@RequestMapping(value = "game/{gameId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/game/{gameId}", method = RequestMethod.DELETE)
 	public String deleteGame(@PathVariable String gameId) {
 		Game game = montyHallService.removeGame(gameId);
 
@@ -91,7 +98,7 @@ public class MontyHallController {
 	}
 	
 	// get stats
-	@RequestMapping(value = "stats", method = RequestMethod.GET)
+	@RequestMapping(value = "/stats", method = RequestMethod.GET)
 	public String getStats() {
 		JsonObjectBuilder statsObject = Json.createObjectBuilder();
 		for (Map.Entry<String, Integer> statEntry : montyHallService.getStats().entrySet()) {

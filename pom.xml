@@ -5,7 +5,7 @@
 
 	<groupId>andrew-macheret</groupId>
 	<artifactId>montyhall-server</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -14,9 +14,7 @@
 	</parent>
 
 	<dependencies>
-		<!-- spring stuff -->
-		<!-- <dependency> <groupId>org.springframework.hateoas</groupId> <artifactId>spring-hateoas</artifactId> 
-			</dependency> -->
+		<!-- springboot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -42,18 +40,20 @@
 
 	<build>
 		<plugins>
+			<!-- Springboot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
+			<!-- Docker -->
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.11</version>
 				<configuration>
 					<imageName>515875352897.dkr.ecr.us-east-1.amazonaws.com/projects/server/montyhall-server:latest</imageName>
-					
+
 					<dockerDirectory>src/main/docker</dockerDirectory>
 					<useConfigFile>true</useConfigFile>
 					<resources>
@@ -63,6 +63,20 @@
 							<include>${project.build.finalName}.jar</include>
 						</resource>
 					</resources>
+				</configuration>
+			</plugin>
+
+			<!-- Add Manifest.MF -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
