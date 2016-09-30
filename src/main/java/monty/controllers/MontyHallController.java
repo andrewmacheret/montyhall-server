@@ -10,7 +10,6 @@ import javax.json.JsonObjectBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,7 @@ import monty.services.MontyHallService;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class MontyHallController {
 	@Autowired
 	MontyHallService montyHallService;
@@ -31,8 +30,14 @@ public class MontyHallController {
 	// give basic info at the root path
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String getVersion() {
+		// get the version - this only works if there's a manifest file
+		String version = getClass().getPackage().getImplementationVersion();
+		if (version == null) {
+			version = "UNSTABLE";
+		}
+		
 		return Json.createObjectBuilder()
-				.add("version", getClass().getPackage().getImplementationVersion())
+				.add("version", version)
 				.add("apis", Json.createArrayBuilder()
 						.add("/game")
 						.add("/stats")

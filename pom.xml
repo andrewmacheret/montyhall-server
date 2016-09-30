@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.0.RELEASE</version>
+		<version>1.4.1.RELEASE</version>
 	</parent>
 
 	<dependencies>
@@ -18,6 +18,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 
 		<!-- json -->
@@ -31,6 +35,13 @@
 			<artifactId>javax.json</artifactId>
 			<version>1.0.4</version>
 		</dependency>
+
+		<!-- junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<properties>
@@ -50,12 +61,13 @@
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.4.11</version>
+				<version>0.4.13</version>
 				<configuration>
-					<imageName>515875352897.dkr.ecr.us-east-1.amazonaws.com/projects/server/montyhall-server:latest</imageName>
-
-					<dockerDirectory>src/main/docker</dockerDirectory>
-					<useConfigFile>true</useConfigFile>
+					<imageName>andrewmacheret/montyhall-server</imageName>
+		      <imageTags>
+		         <imageTag>${project.version}</imageTag>
+		         <imageTag>latest</imageTag>
+		      </imageTags>
 					<resources>
 						<resource>
 							<targetPath>/</targetPath>
