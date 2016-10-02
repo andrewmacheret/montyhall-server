@@ -22,9 +22,9 @@ services:
 
 after_success:
   # push to docker hub
-  - set -e
-  - VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
-  - TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
-  - [ "${TRAVIS_JDK_VERSION}" == "openjdk8" ] && TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
-  - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-  - mvn clean package docker:build 
+  -> set -e
+  -> VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
+  -> TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
+  -> [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]] && TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
+  -> docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+  -> mvn clean package docker:build 
