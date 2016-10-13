@@ -23,4 +23,4 @@ after_success:
   - > TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
   - > [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]] && TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
   - > docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-  - > mvn clean package docker:build 
+  - > mvn clean package docker:build ${TAGS[@]}
