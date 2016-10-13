@@ -26,13 +26,20 @@ after_success:
     set -e
 
     VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
-    TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
-    if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
-      TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
-    fi
     docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-    echo mvn clean package docker:build -DpushImageTags ${TAGS[@]}
-    mvn clean package docker:build -DpushImageTags ${TAGS[@]}
+    mvn clean package docker:build
+
+    docker tag "${DOCKER_USERNAME}/${CONTAINER_NAME}" "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${TRAVIS_JDK_VERSION}"
+    docker tag "${DOCKER_USERNAME}/${CONTAINER_NAME}" "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${VERSION}-${TRAVIS_JDK_VERSION}"
+    docker push "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${TRAVIS_JDK_VERSION}"
+    docker push "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${VERSION}-${TRAVIS_JDK_VERSION}"
+    
+    if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
+      docker tag "${DOCKER_USERNAME}/${CONTAINER_NAME}" "${DOCKER_USERNAME}/${CONTAINER_NAME}":"latest"
+      docker tag "${DOCKER_USERNAME}/${CONTAINER_NAME}" "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${VERSION}"
+      docker push "${DOCKER_USERNAME}/${CONTAINER_NAME}":"latest"
+      docker push "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${VERSION}"
+    fi
 
   - |+
     # ssh deploy
