@@ -25,14 +25,13 @@ after_success:
     # push to docker hub
     set -e
 
-    VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
-    TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
-    if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
-      TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
-    fi
     docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-    echo "TAGS=${TAGS[@]}"
-    mvn clean package docker:build -DpushImage ${TAGS[@]}
+    VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
+    if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
+      mvn clean package docker:build -DpushImage -DockerImageTag="latest" -DdockerImageTag="${VERSION}" -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}"
+    else
+      mvn clean package docker:build -DpushImage -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}"
+    fi
 
   - |+
     # ssh deploy
