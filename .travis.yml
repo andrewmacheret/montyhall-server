@@ -31,7 +31,7 @@ after_success:
       TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
     fi
     docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-    mvn clean package docker:build ${TAGS[@]}
+    mvn clean package docker:build -DpushImage ${TAGS[@]}
 
   - |+
     # ssh deploy
