@@ -66,6 +66,7 @@
 					<imageName>${project.groupId}/${project.artifactId}</imageName>
 					<dockerDirectory>src/main/docker</dockerDirectory>
 					<useConfigFile>true</useConfigFile>
+					<forceTags>true</forceTags>
 					<resources>
 						<resource>
 							<targetPath>/</targetPath>
