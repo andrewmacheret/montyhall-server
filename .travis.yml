@@ -31,12 +31,13 @@ after_success:
       TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
     fi
     docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    echo "TAGS=${TAGS[@]}"
     mvn clean package docker:build -DpushImage ${TAGS[@]}
 
   - |+
     # ssh deploy
     set -e
-    
+
     if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
       openssl aes-256-cbc -K $encrypted_54d012b34bb3_key -iv $encrypted_54d012b34bb3_iv -in id_rsa_a1-server.enc -out "${TRAVIS_BUILD_DIR}/id_rsa_a1-server" -d
       eval "$(ssh-agent -s)"
