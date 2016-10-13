@@ -20,17 +20,23 @@ services:
   - docker
 
 after_success:
-  # push to docker hub
-  - set -e
-  - VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
-  - TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
-  - >
-    [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]] && TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
-  - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-  - mvn clean package docker:build ${TAGS[@]}
-  # ssh deploy
-  - openssl aes-256-cbc -K $encrypted_54d012b34bb3_key -iv $encrypted_54d012b34bb3_iv -in id_rsa_a1-server.enc -out ~\/.ssh/id_rsa_a1-server -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 "${TRAVIS_BUILD_DIR}/id_rsa_a1-server"
-  - ssh-add "${TRAVIS_BUILD_DIR}/id_rsa_a1-server"
-  - ssh a1@servers.andrewmacheret.com "cd ~/servers/a1-server && docker-compose pull ${SERVICE_NAME} && docker-compose up -d --force-recreate ${SERVICE_NAME}"
+  - |+
+    set -e
+
+    # push to docker hub
+    VERSION="$( printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION=' | cut -d= -f2 )"
+    TAGS=( -DdockerImageTag="${TRAVIS_JDK_VERSION}" -DdockerImageTag="${VERSION}-${TRAVIS_JDK_VERSION}" )
+    if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
+      TAGS=(${TAGS[@]} -DdockerImageTag="latest" -DdockerImageTag="${VERSION}" )
+    fi
+    docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    mvn clean package docker:build ${TAGS[@]}
+
+    # ssh deploy
+    if [[ "${TRAVIS_JDK_VERSION}" == "openjdk8" ]]; then
+      openssl aes-256-cbc -K $encrypted_54d012b34bb3_key -iv $encrypted_54d012b34bb3_iv -in id_rsa_a1-server.enc -out ~\/.ssh/id_rsa_a1-server -d
+      eval "$(ssh-agent -s)"
+      chmod 600 "${TRAVIS_BUILD_DIR}/id_rsa_a1-server"
+      ssh-add "${TRAVIS_BUILD_DIR}/id_rsa_a1-server"
+      ssh a1@servers.andrewmacheret.com "cd ~/servers/a1-server && docker-compose pull ${SERVICE_NAME} && docker-compose up -d --force-recreate ${SERVICE_NAME}"
+    fi
