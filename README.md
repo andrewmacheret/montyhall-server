@@ -6,6 +6,8 @@ A java springboot microservice that serves an api for a [monty hall](https://en.
 
 Meant to be consumed by [montyhall-client](https://github.com/andrewmacheret/montyhall-client).
 
+See it running at [https://montyhall.andrewmacheret.com](https://montyhall.andrewmacheret.com).
+
 ## Docker usage:
 
 Prereqs:
