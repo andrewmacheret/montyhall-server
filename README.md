@@ -40,11 +40,9 @@ mvn spring-boot:run
 
 ## Test it:
 
-* `curl 'http://localhost`
+* `curl 'http://localhost'` -you should get back something like:
 
-  * You should get back something like:
-
-    ```json
-    {"version":"1.1.2","apis":["/game","/stats"]}
-    ```
+  ```json
+  {"version":"1.1.2","apis":["/game","/stats"]}
+  ```
 
