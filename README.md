@@ -15,56 +15,36 @@ Prereqs:
 Usage:
 
 ```bash
-# install node prereqs
-npm install
-
-# optional: build it from source
-docker build -t andrewmacheret/remote-apis .
+# build it
+mvn clean package docker:build
 
 # run it
 docker run -d \
-  --name remote-apis \
+  --name montyhall-server \
   -p 80:80 \
-  andrewmacheret/remote-apis
+  andrewmacheret/montyhall-server
 ```
 
 ## Manual usage:
 
 Prereqs:
 
-* A [JDK](http://openjdk.java.net/projects/jdk8/) - tested with Oracle JDK 8 and OpenJDK 8
+* A [JDK](http://openjdk.java.net/projects/jdk8) - tested with Oracle JDK 8 and OpenJDK 8
 
 Usage:
 
 ```bash
-# install node prereqs
-npm install
-
 # run it
-node remote-apis.js
+mvn spring-boot:run
 ```
 
-Modify `remoteApis` and `port` in [settings.js](settings.js) as needed.
-
 ## Test it:
-
-* `node remote-apis.js`
 
 * `curl 'http://localhost`
 
   * You should get back something like:
 
     ```json
-    {
-      "apis": [
-          "/remote-apis/highmaps/worlds/custom/world",
-          "/remote-apis/worldbank/indicators",
-          "/remote-apis/worldbank/indicators/:_id",
-          "/remote-apis/worldbank/countries"
-      ]
-    }
+    {"version":"1.1.2","apis":["/game","/stats"]}
     ```
-* `curl 'http://localhost/remote-apis/worldbank/countries`
-
-  * You should get the same result as if you went to [http://api.worldbank.org/countries?format=json&per_page=32767](http://api.worldbank.org/countries?format=json&per_page=32767)
 
