@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import monty.entities.Door;
 import monty.entities.Game;
+import monty.options.DoorOptions;
+import monty.options.GameOptions;
 import monty.services.MontyHallService;
 
 @RestController
@@ -40,7 +42,7 @@ public class MontyHallController {
 		return Json.createObjectBuilder()
 				.add("version", version)
 				.add("apis", Json.createArrayBuilder()
-						.add("/game")
+						.add("/games")
 						.add("/stats")
 						.build())
 				.build()
@@ -48,7 +50,7 @@ public class MontyHallController {
 	}
 	
 	// get game state and doors
-	@RequestMapping(value = "/game/{gameId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/games/{gameId}", method = RequestMethod.GET)
 	public String getGame(@PathVariable String gameId) {
 		Game game = montyHallService.getGame(gameId);
 
@@ -56,7 +58,7 @@ public class MontyHallController {
 	}
 
 	// create new game
-	@RequestMapping(value = "/game", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/games", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String createGame(@RequestBody GameOptions gameOptions) {
 		Game game = gameOptions.getNumberOfDoors() != null
 				? montyHallService.newGame(gameOptions.getNumberOfDoors())
@@ -66,7 +68,7 @@ public class MontyHallController {
 	}
 
 	// select / open a door
-	@RequestMapping(value = "/game/{gameId}/door/{doorNumber}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/games/{gameId}/doors/{doorNumber}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String changeDoor(@PathVariable String gameId, @PathVariable int doorNumber,
 			@RequestBody DoorOptions doorOptions) {
 		if (doorOptions.getState() == null) {
@@ -93,7 +95,7 @@ public class MontyHallController {
 	}
 
 	// delete game
-	@RequestMapping(value = "/game/{gameId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/games/{gameId}", method = RequestMethod.DELETE)
 	public String deleteGame(@PathVariable String gameId) {
 		Game game = montyHallService.removeGame(gameId);
 

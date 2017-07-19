@@ -1,4 +1,4 @@
-package monty.controllers;
+package monty.options;
 
 public class GameOptions {
 	private Integer numberOfDoors;

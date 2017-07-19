@@ -1,4 +1,4 @@
-package monty.controllers;
+package monty.options;
 
 import monty.entities.Door;
 
